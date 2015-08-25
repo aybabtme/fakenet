@@ -30,9 +30,18 @@ func client(dialer func() net.Conn) {
 }
 ```
 
+you then just create a fake listener:
+
+```go
+l, dial := Listener(ctx)
+defer l.Close()
+go server(l)
+client(dial)
+```
+
 Or a concrete example:
 
-```
+```go
 l, dial := Listener(ctx)
 defer l.Close()
 
