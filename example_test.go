@@ -2,18 +2,20 @@ package fakenet
 
 import (
 	"fmt"
-	"golang.org/x/net/context"
 	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 func ExampleListener() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	l, dial := Listener(ctx)
+	network := Network()
+	l := network.Listen(ctx)
 	defer l.Close()
 	go func() {
 		handler := func(w http.ResponseWriter, r *http.Request) {
@@ -29,8 +31,8 @@ func ExampleListener() {
 	}()
 
 	client := http.Client{Transport: &http.Transport{
-		Dial: func(_, _ string) (net.Conn, error) {
-			return dial(), nil
+		Dial: func(_, addr string) (net.Conn, error) {
+			return network.Dial(ctx, addr)
 		},
 	}}
 

@@ -1,10 +1,11 @@
 package fakenet
 
 import (
-	"golang.org/x/net/context"
 	"io/ioutil"
 	"testing"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 func TestDuplex(t *testing.T) {

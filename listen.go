@@ -18,7 +18,7 @@ var _ net.Addr = new(addr)
 
 type addr string
 
-func newAddr() net.Addr       { return addr(randString(64)) }
+func newAddr() net.Addr       { return addr(randString(64) + ":80") }
 func (addr) Network() string  { return "fakenetwork" }
 func (a addr) String() string { return string(a) }
 
@@ -33,20 +33,6 @@ type listener struct {
 
 	connsl sync.Mutex
 	conns  map[*conn]struct{}
-}
-
-func Listener(parent context.Context) (net.Listener, func() net.Conn) {
-	ctx, cancel := context.WithCancel(parent)
-	l := &listener{
-		ctx:     ctx,
-		cancel:  cancel,
-		addr:    newAddr(),
-		acceptc: make(chan *conn, 0),
-		conns:   make(map[*conn]struct{}),
-	}
-	return l, func() net.Conn {
-		return <-l.acceptc
-	}
 }
 
 func (l *listener) Addr() net.Addr { return l.addr }
