@@ -15,7 +15,7 @@ func TestDuplex(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	client, server := NewDuplex(ctx)
+	client, server := newDuplex(ctx)
 
 	go func() {
 

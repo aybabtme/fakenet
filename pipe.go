@@ -7,33 +7,33 @@ import (
 	"golang.org/x/net/context"
 )
 
-func NewDuplex(ctx context.Context) (*Pipe, *Pipe) {
+func newDuplex(ctx context.Context) (*pipe, *pipe) {
 	forward := make(chan []byte, 0)
 	backward := make(chan []byte, 0)
-	fwPipe := &Pipe{
+	fwpipe := &pipe{
 		bgCtx: ctx,
 		w:     &pipeWriter{bgCtx: ctx, writech: forward},
 		r:     &pipeReader{bgCtx: ctx, readch: backward},
 	}
-	bwPipe := &Pipe{
+	bwpipe := &pipe{
 		bgCtx: ctx,
 		w:     &pipeWriter{bgCtx: ctx, writech: backward},
 		r:     &pipeReader{bgCtx: ctx, readch: forward},
 	}
-	return fwPipe, bwPipe
+	return fwpipe, bwpipe
 }
 
-type Pipe struct {
+type pipe struct {
 	bgCtx context.Context
 	r     *pipeReader
 	w     *pipeWriter
 }
 
-func (pipe *Pipe) Write(p []byte) (int, error)                         { return pipe.w.Write(pipe.bgCtx, p) }
-func (pipe *Pipe) Read(p []byte) (int, error)                          { return pipe.r.Read(pipe.bgCtx, p) }
-func (pipe *Pipe) CtxWrite(ctx context.Context, p []byte) (int, error) { return pipe.w.Write(ctx, p) }
-func (pipe *Pipe) CtxRead(ctx context.Context, p []byte) (int, error)  { return pipe.r.Read(ctx, p) }
-func (pipe *Pipe) Close() error                                        { return pipe.w.Close() }
+func (pipe *pipe) Write(p []byte) (int, error)                         { return pipe.w.Write(pipe.bgCtx, p) }
+func (pipe *pipe) Read(p []byte) (int, error)                          { return pipe.r.Read(pipe.bgCtx, p) }
+func (pipe *pipe) CtxWrite(ctx context.Context, p []byte) (int, error) { return pipe.w.Write(ctx, p) }
+func (pipe *pipe) CtxRead(ctx context.Context, p []byte) (int, error)  { return pipe.r.Read(ctx, p) }
+func (pipe *pipe) Close() error                                        { return pipe.w.Close() }
 
 type pipeWriter struct {
 	mu        sync.Mutex

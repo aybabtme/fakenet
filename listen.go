@@ -82,7 +82,7 @@ type conn struct {
 	readdeadline  time.Time
 	writedeadline time.Time
 
-	pipe *Pipe
+	pipe *pipe
 
 	close func() error
 }
@@ -90,7 +90,7 @@ type conn struct {
 func newConn(ctx context.Context, serverAddr net.Addr, onClose func(client, server *conn)) (*conn, *conn) {
 	clientAddr := newAddr()
 
-	fw, bw := NewDuplex(ctx)
+	fw, bw := newDuplex(ctx)
 
 	client := &conn{
 		laddr: clientAddr, raddr: serverAddr,
