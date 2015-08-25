@@ -91,13 +91,11 @@ func (pr *pipeReader) Read(ctx context.Context, p []byte) (int, error) {
 			copy(p, pr.buf[:len(p)])
 			pr.buf = pr.buf[len(pr.buf)-len(p):]
 			return len(p), nil
-
 		}
 		n := len(pr.buf)
 		copy(p, pr.buf)
 		pr.buf = nil
 		if pr.wasEOF {
-
 			return n, io.EOF
 		}
 		return n, nil
@@ -113,13 +111,11 @@ func (pr *pipeReader) Read(ctx context.Context, p []byte) (int, error) {
 		if len(payload) > len(p) {
 			pr.buf = payload[len(payload)-len(p):]
 			payload = payload[:len(p)]
-
 		}
 
 		copy(p, payload)
 
 		if !more && pr.buf == nil {
-
 			return len(payload), io.EOF
 		} else if !more {
 			pr.wasEOF = true

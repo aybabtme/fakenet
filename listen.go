@@ -144,18 +144,12 @@ func (c *conn) Read(p []byte) (int, error) {
 	deadline := c.readdeadline
 	c.deadlinel.Unlock()
 
-	var (
-		n   int
-		err error
-	)
 	if !deadline.IsZero() {
 		ctx, cancel := context.WithDeadline(c.bgCtx, deadline)
 		defer cancel()
-		n, err = c.pipe.CtxRead(ctx, p)
-	} else {
-		n, err = c.pipe.Read(p)
+		return c.pipe.CtxRead(ctx, p)
 	}
-	return n, err
+	return c.pipe.Read(p)
 }
 
 func (c *conn) Write(p []byte) (int, error) {
