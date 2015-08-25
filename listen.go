@@ -185,10 +185,3 @@ func randString(l int) string {
 	}
 	return string(buf)
 }
-
-func imin(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}

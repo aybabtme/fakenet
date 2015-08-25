@@ -77,10 +77,6 @@ func (pr *pipeReader) Read(ctx context.Context, p []byte) (int, error) {
 	pr.mu.Lock()
 	defer pr.mu.Unlock()
 
-	defer func() {
-
-	}()
-
 	select {
 	case <-pr.bgCtx.Done():
 		return 0, pr.bgCtx.Err()
